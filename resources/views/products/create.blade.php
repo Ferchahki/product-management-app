@@ -28,6 +28,10 @@
                 <label for="size">Size:</label>
                 <input type="text" name="size" id="size" class="form-control" required>
             </div>
+            <div class="form-group">
+                <label for="size">Price:</label>
+                <input type="text" name="price" id="price" class="form-control" required>
+            </div>
             <!-- Add other product fields here -->
             <button type="submit" class="btn btn-primary">Add Product</button>
         </form>

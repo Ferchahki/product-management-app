@@ -4,9 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Validation\ValidationException;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Product::class, 'product');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -19,6 +24,20 @@ class ProductController extends Controller
             $query->where('name', 'like', '%' . $search . '%')
                   ->orWhere('description', 'like', '%' . $search . '%');
         })->paginate(10);
+
+        $query = Product::query();
+
+        // Apply filters if provided
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->input('name') . '%');
+        }
+    
+        if ($request->filled('type')) {
+            $query->where('type', 'like', '%' . $request->input('type') . '%');
+        }
+    
+        $products = $query->paginate(10);
+    
     
         return view('products.index', compact('products'));
     }
@@ -38,16 +57,29 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         //
-        $validatedData = $request->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'size' => '',
-            // Add validation rules for other product fields
-        ]);
+        $user = auth()->user();
+        $userID = $user->id; 
+        //dd($userID);
+
+        try {
+        
+            $product = Product::create([
+                'user_id' => $userID, // Assign the user's ID to the 'user_id' column
+                'name' => $request->input('name'),
+                'description' => $request->input('description'),
+                'size' => $request->input('size'),
+                'price' => $request->input('price')
+                // Add other product fields as needed
+            ]);
+        
+            return redirect()->route('products.index')->with('success', 'Product added successfully.');
+
+
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors());
+        }
+
     
-        Product::create($validatedData);
-    
-        return redirect()->route('products.index')->with('success', 'Product added successfully.');
     }
 
     /**

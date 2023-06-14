@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->longText('description');
             $table->decimal('price');
+            $table->string('size');
             $table->unsignedBigInteger('user_id');
         
         

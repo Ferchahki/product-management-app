@@ -9,11 +9,25 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
+       
+
         <form action="{{ route('products.index') }}" method="GET" class="mb-3">
             <div class="form-group d-flex">
                 <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Search by name or description">
                 <button type="submit" class="btn btn-primary ml-2">Search</button>
             </div>
+        </form>
+
+        <form method="GET" action="{{ route('products.index') }}">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" name="name" id="name" class="form-control" value="{{ request('name') }}">
+            </div>
+            <div class="form-group">
+                <label for="type">Type:</label>
+                <input type="text" name="type" id="type" class="form-control" value="{{ request('type') }}">
+            </div>
+            <button type="submit" class="btn btn-primary">Filter</button>
         </form>
 
         <table class="table table-bordered">
